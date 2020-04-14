@@ -41,6 +41,23 @@ describe('app', () => {
                         })
                     })
                 })
+            describe.only('/users', () => {
+                describe('/:username', () => {
+                    describe('GET', () => {
+                        it('status: 200 Responds with an user object', () => {
+                            return request(app).get('/api/users/tickle122')
+                            .expect(200)
+                            .then(({body: {user}}) => {
+                                expect(user).to.contain.keys(
+                                    'username',
+                                    'name',
+                                    'avatar_url'
+                                )
+                            })
+                        })
+                    })
+                })
             })
         })
     })
+})

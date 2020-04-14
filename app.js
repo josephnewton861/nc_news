@@ -6,6 +6,7 @@ const {handles500s} = require('./error-handling/errors')
 app.use('/api', apiRouter)
 
 
+
 //DEFAULT CONTROLLER FOR INVALID PATHS
 app.all('/*', (req, res, next) => {
     res.status(404).send({msg: 'Path not found'})
