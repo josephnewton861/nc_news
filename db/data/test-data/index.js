@@ -1,4 +1,6 @@
-exports.articlesData = require('../test-data/articles')
-exports.commentsData = require('../test-data/articles')
-exports.topicsData = require('../test-data/topics')
-exports.usersData = require('../test-data/users')
+ const articlesData = require('./articles')
+const commentsData = require('./comments')
+const topicsData = require('./topics')
+const usersData = require('./users')
+
+exports.test = { articlesData, commentsData, topicsData, usersData }

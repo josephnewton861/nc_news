@@ -171,7 +171,7 @@ it('Does not mutate the original array of inputs', () => {
 })
 });
 
-describe.only('formatComments', () => {
+describe('formatComments', () => {
   it('Returns an empty array if no comment object has been inputted', () => {
     expect(formatComments([])).to.eql([])
   })
