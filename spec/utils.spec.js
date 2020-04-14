@@ -130,7 +130,52 @@ describe('formatDates', () => {
 });
 
 describe('makeRefObj', () => {
+  it('Returns an empty object if passed an empty array', () => {
+    expect(makeRefObj([])).to.eql({})
+  })
+  it('Returns a reference object for one article', () => {
+      const list = [{ article_id: 1, title: 'A' }]
 
+      const actual = makeRefObj(list)
+
+      const expected = { A: 1 }
+
+      expect(actual).to.eql(expected)
+  })
+  it('Returns a reference object for multiple articles', () => {
+    const list = [
+    { article_id: 1, title: 'A' },
+    { article_id: 2, title: 'B' }, 
+    { article_id: 3, title: 'C' }
+  ]
+    const actual = makeRefObj(list)
+
+    const expected = { A: 1, B: 2, C: 3 }
+
+    expect(actual).to.eql(expected)
+})
+it('Does not mutate the original array of inputs', () => {
+  const list = [
+    { article_id: 1, title: 'A' },
+    { article_id: 2, title: 'B' }, 
+    { article_id: 3, title: 'C' }
+  ]
+
+  makeRefObj(list)
+
+  expect(list).to.eql([
+    { article_id: 1, title: 'A' },
+    { article_id: 2, title: 'B' }, 
+    { article_id: 3, title: 'C' }
+  ])
+})
 });
 
-describe('formatComments', () => {});
+describe.only('formatComments', () => {
+  it('Returns an empty array if no comment object has been inputted', () => {
+    expect(formatComments([])).to.eql([])
+  })
+  it('Returns an array of a formatted comment if passed one comment object', () => {
+    const comments = []
+  })
+});

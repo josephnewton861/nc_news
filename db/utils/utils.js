@@ -24,6 +24,29 @@ exports.formatDates = list => {
 return newListArr
 };
 
-exports.makeRefObj = list => {};
+exports.makeRefObj = list => {
+    const refObj = {}
+  if(!list.length) return refObj
 
-exports.formatComments = (comments, articleRef) => {};
+  list.forEach((listObj) => {
+
+    let key = listObj.title
+    // console.log(key)
+
+    let value = listObj.article_id
+    // console.log(value)
+
+    refObj[key] = value
+
+    return refObj
+  })
+
+//   console.log(refObj)
+  return refObj
+};
+
+exports.formatComments = (comments, articleRef) => {
+    if(!comments.length) return [];
+
+    
+};
