@@ -7,6 +7,9 @@ const baseConfig = {
   },
   seeds: {
     directory: './db/seeds'
+  },
+  migrations: {
+    directory: './db/migrations',
   }
 };
 

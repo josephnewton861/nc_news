@@ -1,15 +1,26 @@
 const {
-  topicData,
-  articleData,
-  commentData,
-  userData
+  topicsData,
+  articlesData,
+  commentsData,
+  usersData
 } = require('../data/index.js');
 
 const { formatDates, formatComments, makeRefObj } = require('../utils/utils');
 
+
+// exports.seed = (connection) => {
+//   return connection.migrate
+//   .rollback()
+//   .then(() => {
+//       return connection.migrate.latest()
+//   }).then(() => {
+      
+//   })
+// }
+
 exports.seed = function(knex) {
-  const topicsInsertions = knex('topics').insert(topicData);
-  const usersInsertions = knex('users').insert(userData);
+  const topicsInsertions = knex('topics').insert(topicsData);
+  const usersInsertions = knex('users').insert(usersData);
 
   return Promise.all([topicsInsertions, usersInsertions])
     .then(() => {
