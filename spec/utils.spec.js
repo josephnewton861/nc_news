@@ -176,6 +176,165 @@ describe.only('formatComments', () => {
     expect(formatComments([])).to.eql([])
   })
   it('Returns an array of a formatted comment if passed one comment object', () => {
-    const comments = []
+    const comments = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "A",
+        created_by: 'butter_bridge',
+        votes: 16,
+        created_at: 1511354163389,
+      }
+    ]
+    const refObj = {
+      A: 1
+    }
+
+    const actual = formatComments(comments, refObj)
+
+    const expected = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 1,
+        author: 'butter_bridge',
+        votes: 16,
+        created_at: new Date(1511354163389)
+      }
+    ]
+    expect(actual).to.eql(expected)
+  })
+  it('Returns an array of formatted comments if passed multiple comments objects', () => {
+    const comments = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "A",
+        created_by: 'butter_bridge',
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body:
+          'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+        belongs_to: 'B',
+        created_by: 'butter_bridge',
+        votes: 14,
+        created_at: 1479818163389,
+      },
+      {
+        body:
+          'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
+        belongs_to: 'C',
+        created_by: 'icellusedkars',
+        votes: 100,
+        created_at: 1448282163389,
+      }
+    ]
+    const refObj = {
+      A: 1,
+      B: 2, 
+      C: 3
+    }
+
+    const actual = formatComments(comments, refObj)
+
+    const expected = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        article_id: 1,
+        author: 'butter_bridge',
+        votes: 16,
+        created_at: new Date(1511354163389)
+      },
+      {
+        body:
+          'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+        article_id: 2,
+        author: 'butter_bridge',
+        votes: 14,
+        created_at: new Date(1479818163389),
+      },
+      {
+        body:
+          'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
+        article_id: 3,
+        author: 'icellusedkars',
+        votes: 100,
+        created_at: new Date(1448282163389),
+      }  
+    ]
+    expect(actual).to.eql(expected)
+  })
+  it('Does not mutate the original array', () => {
+    const comments = [
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "A",
+        created_by: 'butter_bridge',
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body:
+          'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+        belongs_to: 'B',
+        created_by: 'butter_bridge',
+        votes: 14,
+        created_at: 1479818163389,
+      },
+      {
+        body:
+          'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
+        belongs_to: 'C',
+        created_by: 'icellusedkars',
+        votes: 100,
+        created_at: 1448282163389,
+      }
+    ]
+
+    const refObj = {
+      A: 1,
+      B: 2, 
+      C: 3
+    }
+
+    formatComments(comments, refObj)
+
+    expect(comments).to.eql([
+      {
+        body:
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        belongs_to: "A",
+        created_by: 'butter_bridge',
+        votes: 16,
+        created_at: 1511354163389,
+      },
+      {
+        body:
+          'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+        belongs_to: 'B',
+        created_by: 'butter_bridge',
+        votes: 14,
+        created_at: 1479818163389,
+      },
+      {
+        body:
+          'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.',
+        belongs_to: 'C',
+        created_by: 'icellusedkars',
+        votes: 100,
+        created_at: 1448282163389,
+      }
+    ])
+
   })
 });
+
+
+// const albums = [
+//   { name: 'Grammatics', artist: 'Grammatics', releaseYear: 2009 }
+// ];
+//     const artistLookup = {Grammatics: 9923};

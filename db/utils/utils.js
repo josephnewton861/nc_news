@@ -31,22 +31,42 @@ exports.makeRefObj = list => {
   list.forEach((listObj) => {
 
     let key = listObj.title
-    // console.log(key)
 
     let value = listObj.article_id
-    // console.log(value)
 
     refObj[key] = value
 
     return refObj
   })
-
-//   console.log(refObj)
   return refObj
 };
 
 exports.formatComments = (comments, articleRef) => {
     if(!comments.length) return [];
 
-    
+   const formattedComments = comments.map(comment => {
+        let key = comment.belongs_to
+
+
+        let value = articleRef[key]
+
+        let newTimeStamp = new Date(comment.created_at)
+
+        let body = comment.body
+        let article_id = value
+        let author = comment.created_by
+        let votes = comment.votes
+        let created_at = newTimeStamp
+
+        const newComment = {
+            body,
+            article_id,
+            author,
+            votes,
+            created_at
+        }
+
+        return newComment
+    })
+    return formattedComments
 };
