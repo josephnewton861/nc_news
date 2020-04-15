@@ -139,7 +139,7 @@ describe('app', () => {
                             })
                         })
                     })
-                    describe.only('PATCH', () => {
+                    describe('PATCH', () => {
                         it('status 200: Returns an updated article object with the votes property increased by 1', () => {
                             return request(app).patch('/api/articles/1')
                             .send({inc_votes: 1})
@@ -148,13 +148,31 @@ describe('app', () => {
                                 expect(article.votes).to.equal(1)
                             })
                         })
-                        it('Returns an updated article object with the votes property increased by 100', () => {
+                        it('status: 200 Returns an updated article object with the votes property increased by 100', () => {
                             return request(app).patch('/api/articles/1')
                             .send({inc_votes: 100})
                             .expect(200)
                             .then(({body: {article}}) => {
                                 expect(article.votes).to.equal(100)
                             })
+                        })
+                        it('status: 200 updated article object contains the correct keys', () => {
+                            return request(app).patch('/api/articles/1')
+                            .send({inc_votes: 10})
+                            .expect(200)
+                            .then(({body: {article}}) => {
+                                expect(article).to.contain.keys(
+                                    'article_id',
+                                    'title',
+                                    'body',
+                                    'votes',
+                                    'topic',
+                                    'author',
+                                    'created_at'
+                                )
+                            })
+
+
                         })
                         it('status 404: valid input however article_id inputted does not exist in db', () => {
                             return request(app).patch('/api/articles/1000')
@@ -164,9 +182,17 @@ describe('app', () => {
                                 expect(msg).to.equal('article_id 1000 does not exist in database')
                             })
                         })
+                        it('status 400: Invalid datatype has been inputted to increment votes', () => {
+                            return request(app).patch('/api/articles/1')
+                            .send({inc_votes: 'invalid'})
+                            .expect(400)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('Bad request')
+                            })
+                        })
                     })
                     describe('/comments', () => {
-                        describe('POST', () => {
+                        describe.only('POST', () => {
                             it('status: 201 responds with an inserted comment object', () => {
                                 return request(app).post('/api/articles/1/comments')
                                 .send({
