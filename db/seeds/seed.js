@@ -23,7 +23,7 @@ const { formatDates, formatComments, makeRefObj } = require('../utils/utils');
             .then(articleRows => {
 
               const formattedDates = formatDates(articlesData, articleRows)
-              return knex('articles').insert(formattedDates)
+              return knex('articles').insert(formattedDates).returning('*')
             })
             .then((articleRows) => {
               const articleRef = makeRefObj(articleRows);

@@ -25,6 +25,7 @@ return newListArr
 };
 
 exports.makeRefObj = list => {
+
     const refObj = {}
   if(!list.length) return refObj
 
