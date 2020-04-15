@@ -5,7 +5,9 @@ exports.fetchUserByUsername = (username) => {
     .from('users')
     .where("users.username", username)
     .then((user) => {
-        // console.log(user[0])
+        if(!user.length) {
+           return Promise.reject({status: 404, msg: `Valid input, however username ${username} does not exist in database`})
+        } else 
         return user[0]
     })
 }

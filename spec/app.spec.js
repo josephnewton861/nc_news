@@ -41,9 +41,16 @@ describe('app', () => {
                         })
                     })
                 })
-            describe.only('/users', () => {
+            describe('/users', () => {
                 describe('/:username', () => {
                     describe('GET', () => {
+                        it('status: 200 Responds with an user object', () => {
+                            return request(app).get('/api/users/tickle122')
+                            .expect(200)
+                            .then(({body: {user}}) => {
+                                expect(user).to.be.an('object')
+                            })
+                        })
                         it('status: 200 Responds with an user object', () => {
                             return request(app).get('/api/users/tickle122')
                             .expect(200)
@@ -53,6 +60,13 @@ describe('app', () => {
                                     'name',
                                     'avatar_url'
                                 )
+                            })
+                        })
+                        it('status: 404 valid input but username searched for does not exist in db', () => {
+                            return request(app).get('/api/users/coder1000')
+                            .expect(404)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('Valid input, however username coder1000 does not exist in database')
                             })
                         })
                     })
