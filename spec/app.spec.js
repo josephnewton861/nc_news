@@ -435,6 +435,20 @@ describe('app', () => {
                             return request(app).delete('/api/comments/1')
                             .expect(204)
                         })
+                        it('status: 404 valid input however comment_id does not exist in db', () => {
+                            return request(app).delete('/api/comments/1000')
+                            .expect(404)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('comment_id 1000 does not exist in database')
+                            })
+                        })
+                        it('status: 400 Invalid datatype for comment_id inputted', () => {
+                            return request(app).delete('/api/comments/invalid')
+                            .expect(400)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('Bad request')
+                            })
+                        })
                     })
                 })
             })

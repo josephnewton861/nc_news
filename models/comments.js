@@ -59,4 +59,7 @@ exports.removeCommentsByCommentId = (comment_id) => {
     return connection('comments')
     .where('comment_id', comment_id)
     .del()
+    .then((delCount) => {
+        if(delCount === 0) return Promise.reject({status: 404, msg: `comment_id ${comment_id} does not exist in database`})
+    })
 }
