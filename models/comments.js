@@ -1,10 +1,25 @@
 const connection = require('../db/connection')
 
 
-exports.addCommentsByArticleId = (body, article_id) => {
-   console.log(body)
-   console.log(article_id)
-}
+exports.addCommentsByArticleId = (article_id, body) => {
+ 
+    const addedComment = {};
+    addedComment.author = body.username;
+    addedComment.body = body.body;
+    addedComment.article_id = article_id;
+
+    console.log(addedComment)
+  
+    return connection('comments')
+      .insert(addedComment)
+      .returning('*')
+      .then(comments => {
+        console.log(comments)
+      });
+  };
+
+
+
 
 //Insert body into comments where articles.article_id = article_id retuning ('*')
 
@@ -22,5 +37,17 @@ exports.fetchCommentsByArticleId = (article_id, sort_by = 'created_at', order) =
         } else 
         // console.log(comments)
         return comments
+    })
+}
+
+exports.updateCommentsByCommentId = (comment_id, inc_votes) => {
+
+    return connection('comments')
+    .where('comment_id', comment_id)
+    .increment('votes', inc_votes)
+    .returning('*')
+    .then((comment) => {
+        // console.log(comment[0])
+        return comment[0]
     })
 }

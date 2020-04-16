@@ -93,6 +93,71 @@ describe('app', () => {
                 })
             })
             describe('/articles', () => {
+                describe('GET', () => {
+                    it('status: 200 Responds with an array of articles', () => {
+                        return request(app).get('/api/articles')
+                        .expect(200)
+                        .then(({body: {articles}}) => {
+                            expect(articles).to.be.an('array')
+                        })
+                    })
+                    it('status: 200 Responds with an array of article objects containing the correct properties', () => {
+                        return request(app).get('/api/articles')
+                        .expect(200)
+                        .then(({body: {articles}}) => {
+                            articles.forEach(article => {
+                                expect(article).to.contain.keys(
+                                    'author',
+                                    'title',
+                                    'article_id',
+                                    'topic',
+                                    'created_at',
+                                    'votes',
+                                    'comment_count'
+                                )
+                            })
+                        })
+                    })
+                    it('status: 200 Able to accept a sort_by query defaulted to date', () => {
+                        return request(app).get('/api/articles?sort_by=created_at')
+                        .expect(200)
+                        .then(({body: {articles}}) => {
+                            expect(articles).to.be.sortedBy('created_at')
+                        })
+                    })
+                    it('status: 200 Able to accept a sort_by query defaulted to date', () => {
+                        return request(app).get('/api/articles?sort_by=title')
+                        .expect(200)
+                        .then(({body: {articles}}) => {
+                            expect(articles).to.be.sortedBy('title')
+                        })
+                    }) 
+                    it('status: 200 Able to accept a order query defaulted to desc', () => {
+                        return request(app).get('/api/articles?order=desc')
+                        .expect(200)
+                        .then(({body: {articles}}) => {
+                            expect(articles).to.be.sortedBy('order', {descending: true})
+                        })
+                    }) 
+                    it('status: 400 Invalid sort_by input of a column that does not exist on db', () => {
+                        return request(app).get('/api/articles?sort_by=invalid')
+                        .expect(400)
+                        .then(({body: {msg}}) => {
+                            expect(msg).to.equal('Bad request')
+                        })
+                    })
+                    it('status: 405 Invalid method inputted by user', () => {
+                        const invalidMethods = ['post', 'delete', 'patch', 'put']
+                        const methodPromise = invalidMethods.map((method) => {
+                            return request(app)[method]('/api/articles')
+                            .expect(405)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('Invalid method used')
+                            })
+                        })
+                        return Promise.all(methodPromise)
+                    })
+                })
                 describe('/:article_id', () => {
                     describe('GET', () => {
                         it('status: 200 responds with an object', () => {
@@ -192,7 +257,7 @@ describe('app', () => {
                         })
                     })
                     describe('/comments', () => {
-                        describe.only('POST', () => {
+                        describe('POST', () => {
                             it('status: 201 responds with an inserted comment object', () => {
                                 return request(app).post('/api/articles/1/comments')
                                 .send({
@@ -284,6 +349,59 @@ describe('app', () => {
                     })
                 })
             })
+            describe('/comments', () => {
+                describe('/:comment_id', () => {
+                    describe.only('PATCH', () => {
+                        it('status: 200 Responds with an object displaying the updated comment', () => {
+                            return request(app).patch('/api/comments/1')
+                            .send({
+                                inc_votes: 1
+                            })
+                            .expect(200)
+                            .then(({body: {comment}}) => {
+                                expect(comment).to.be.an('object')
+                            })
+                        })
+                        it('status: 200 Responds with the comments votes being incremented by 1', () => {
+                            return request(app).patch('/api/comments/1')
+                            .send({
+                                inc_votes: 1
+                            })
+                            .expect(200)
+                            .then(({body: {comment}}) => {
+                                expect(comment.votes).to.equal(17)
+                            })
+                        })
+                        it('status: 200 Responds with the comments votes being incremented by any other number -10', () => {
+                            return request(app).patch('/api/comments/1')
+                            .send({
+                                inc_votes: -10
+                            })
+                            .expect(200)
+                            .then(({body: {comment}}) => {
+                                expect(comment.votes).to.equal(6)
+                            })
+                        }) 
+                        it('status: 200 Responds with a comments object containing the correct properties', () => {
+                            return request(app).patch('/api/comments/1')
+                            .send({
+                                inc_votes: -10
+                            })
+                            .expect(200)
+                            .then(({body: {comment}}) => {
+                                expect(comment).to.contain.keys(
+                                    'comment_id',
+                                    'author',
+                                    'article_id',
+                                    'votes',
+                                    'created_at',
+                                    'body'
+                                )
+                            })
+                        })
+                    })
+                })
+                })
+            })
         })
     })
-})
