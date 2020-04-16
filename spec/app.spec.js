@@ -351,7 +351,7 @@ describe('app', () => {
             })
             describe('/comments', () => {
                 describe('/:comment_id', () => {
-                    describe.only('PATCH', () => {
+                    describe('PATCH', () => {
                         it('status: 200 Responds with an object displaying the updated comment', () => {
                             return request(app).patch('/api/comments/1')
                             .send({
@@ -397,6 +397,36 @@ describe('app', () => {
                                     'created_at',
                                     'body'
                                 )
+                            })
+                        })
+                        it('status: 404 Valid input however comment id inputted does not exist in db', () => {
+                            return request(app).patch('/api/comments/1000')
+                            .send({
+                                inc_votes: 1
+                            })
+                            .expect(404)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('comment_id 1000 does not exist in database')
+                            })
+                        })
+                        it('status: 400 Invalid datatype for comment_id has been inputted', () => {
+                            return request(app).patch('/api/comments/invalid')
+                            .send({
+                                inc_votes: 1
+                            })
+                            .expect(400)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('Bad request')
+                            })
+                        })
+                        it('status: 400 Invalid datatype for in_votes has been inputted', () => {
+                            return request(app).patch('/api/comments/1')
+                            .send({
+                                inc_votes: 'invalid'
+                            })
+                            .expect(400)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('Bad request')
                             })
                         })
                     })

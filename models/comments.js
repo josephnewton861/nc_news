@@ -47,6 +47,9 @@ exports.updateCommentsByCommentId = (comment_id, inc_votes) => {
     .increment('votes', inc_votes)
     .returning('*')
     .then((comment) => {
+        if(!comment.length) {
+            return Promise.reject({status: 404, msg: `comment_id ${comment_id} does not exist in database`})
+        } else 
         // console.log(comment[0])
         return comment[0]
     })
