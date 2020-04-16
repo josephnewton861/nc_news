@@ -63,16 +63,27 @@ describe('app', () => {
             })
             describe('/users', () => {
                 describe('/:username', () => {
+                    it('status: 405 Invalid method has been inputted', () => {
+                        const invalidMethods = ['patch', 'post', 'delete', 'put']
+                        const methodPromise = invalidMethods.map((method) => {
+                            return request(app)[method]('/api/users/tickle222')
+                            .expect(405)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('Invalid method used')     
+                            })
+                        })
+                        return Promise.all(methodPromise)
+                    })
                     describe('GET', () => {
                         it('status: 200 Responds with an user object', () => {
-                            return request(app).get('/api/users/tickle122')
+                            return request(app).get('/api/users/butter_bridge')
                             .expect(200)
                             .then(({body: {user}}) => {
                                 expect(user).to.be.an('object')
                             })
                         })
                         it('status: 200 Responds with an user object containing the correct properties', () => {
-                            return request(app).get('/api/users/tickle122')
+                            return request(app).get('/api/users/butter_bridge')
                             .expect(200)
                             .then(({body: {user}}) => {
                                 expect(user).to.contain.keys(
@@ -86,14 +97,14 @@ describe('app', () => {
                             return request(app).get('/api/users/coder1000')
                             .expect(404)
                             .then(({body: {msg}}) => {
-                                expect(msg).to.equal('Valid input, however username coder1000 does not exist in database')
+                                expect(msg).to.equal('username coder1000 does not exist in database')
                             })
                         })
                     })
                 })
             })
             describe('/articles', () => {
-                describe('GET', () => {
+                describe.only('GET', () => {
                     it('status: 200 Responds with an array of articles', () => {
                         return request(app).get('/api/articles')
                         .expect(200)
@@ -133,10 +144,10 @@ describe('app', () => {
                         })
                     }) 
                     it('status: 200 Able to accept a order query defaulted to desc', () => {
-                        return request(app).get('/api/articles?order=desc')
+                        return request(app).get('/api/articles')
                         .expect(200)
                         .then(({body: {articles}}) => {
-                            expect(articles).to.be.sortedBy('order', {descending: true})
+                            expect(articles).to.be.sortedBy('created_at', {descending: true})
                         })
                     }) 
                     it('status: 400 Invalid sort_by input of a column that does not exist on db', () => {
@@ -261,15 +272,70 @@ describe('app', () => {
                             it('status: 201 responds with an inserted comment object', () => {
                                 return request(app).post('/api/articles/1/comments')
                                 .send({
-                                    username: 'tickle122',
+                                    username: 'butter_bridge',
                                     body: 'Northcoders is great'
                                 })
                                 .expect(201)
                                 .then(({body: {comments}}) => {
                                     expect(comments).to.contain.keys(
-                                        'username',
+                                        'author',
                                         'body'
                                      )
+                                })
+                            })
+                            it('status: 400 article_id does not exist in db', () => {
+                                return request(app).post('/api/articles/1000/comments')
+                                .send({
+                                    username: 'butter_bridge',
+                                    body: 'Northcoders is great'
+                                })
+                                .expect(400)
+                                .then(({body: {msg}}) => {
+                                    expect(msg).to.equal('Bad request')
+                                })
+                            })
+                            it('status: 400 invalid datatype input for article_id', () => {
+                                return request(app).post('/api/articles/invalid/comments')
+                                .send({
+                                    username: 'butter_bridge',
+                                    body: 'Northcoders is great'
+                                })
+                                .expect(400)
+                                .then(({body: {msg}}) => {
+                                    expect(msg).to.equal('Bad request')
+                                })
+                            })
+                            it('status: 400 posted a comment without a not nullable column name', () => {
+                                return request(app).post('/api/articles/1/comments')
+                                .send({
+                                    username: 'butter_bridge'
+                                })
+                                .expect(400)
+                                .then(({body: {msg}}) => {
+                                    expect(msg).to.equal('Bad request')
+                                })
+                            })
+                            it('status: 400 posted a comment with no body at all', () => {
+                                return request(app).post('/api/articles/1/comments')
+                                .send({
+
+                                })
+                                .expect(400)
+                                .then(({body: {msg}}) => {
+                                    expect(msg).to.equal('Bad request')
+                                })
+                            })
+                            it('status: 400 posted comment has too many columns that do not exist on db', () => {
+                                return request(app).post('/api/articles/1/comments')
+                                .send({
+                                    invalid: 'Invalid',
+                                    invalid: 'Invalid',
+                                    invalid: 'Invalid',
+                                    invalid: 'Invalid'
+                                })
+                                .expect(400)
+                                .then(({body: {msg}}) => {
+                                    expect(msg).to.equal('Bad request')
                                 })
                             })
                         })
@@ -311,10 +377,10 @@ describe('app', () => {
                                 })
                             })
                             it('status: 200 Able to take a order query defaulted to descending', () => {
-                                return request(app).get('/api/articles/1/comments?order=desc')
+                                return request(app).get('/api/articles/1/comments')
                                 .expect(200)
                                 .then(({body: {comments}}) => {
-                                    expect(comments).to.be.sortedBy('order', {descending: true})
+                                    expect(comments).to.be.sortedBy('created_at', {descending: true})
                                 })
                             }) 
                             it('status: 404 valid input however article_id does not exist in database', () => {
@@ -351,6 +417,17 @@ describe('app', () => {
             })
             describe('/comments', () => {
                 describe('/:comment_id', () => {
+                    it('status: 405 Ivalid method has been inputted', () => {
+                        const invalidMethods = ['post', 'get']
+                        const methodPromise = invalidMethods.map((method) => {
+                            return request(app)[method]('/api/comments/1')
+                            .expect(405)
+                            .then(({body: {msg}}) => {
+                                expect(msg).to.equal('Invalid method used')
+                            })
+                        })
+                        return Promise.all(methodPromise)
+                    })
                     describe('PATCH', () => {
                         it('status: 200 Responds with an object displaying the updated comment', () => {
                             return request(app).patch('/api/comments/1')
@@ -430,10 +507,16 @@ describe('app', () => {
                             })
                         })
                     })
-                    describe.only('DELETE', () => {
+                    describe('DELETE', () => {
                         it('status: 204 Responds with a succesful deletion of a comment by its comment_id', () => {
                             return request(app).delete('/api/comments/1')
                             .expect(204)
+                            .then(() => {
+                                return connection('comments').where({comment_id: 1})
+                            })
+                            .then((comment) => {
+                                expect(comment.length).to.equal(0)
+                            })
                         })
                         it('status: 404 valid input however comment_id does not exist in db', () => {
                             return request(app).delete('/api/comments/1000')
@@ -451,6 +534,7 @@ describe('app', () => {
                         })
                     })
                 })
+                
             })
         })
     })

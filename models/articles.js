@@ -30,16 +30,13 @@ exports.updateArticlesByArticleId = (article_id, inc_votes) => {
     })
 }
 
-exports.fetchArticles = (sort_by = 'created_at', order) => {
+exports.fetchArticles = (sort_by = 'created_at', order = 'desc') => {
     return connection.select('articles.*')
     .from('articles')
    .count({comment_count: 'comment_id'})
    .leftJoin('comments', 'articles.article_id', 'comments.article_id')
    .groupBy('articles.article_id')
-   .orderBy(sort_by)
-   .modify((query) => {
-    if(query === undefined) query.where(order, 'desc')
-   })
+   .orderBy(sort_by, order)
    .returning('*')
    .then((articles) => {
     return articles
