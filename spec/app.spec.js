@@ -430,8 +430,14 @@ describe('app', () => {
                             })
                         })
                     })
-                })
+                    describe.only('DELETE', () => {
+                        it('status: 204 Responds with a succesful deletion of a comment by its comment_id', () => {
+                            return request(app).delete('/api/comments/1')
+                            .expect(204)
+                        })
+                    })
                 })
             })
         })
     })
+})
