@@ -13,15 +13,10 @@ exports.addCommentsByArticleId = (article_id, body) => {
       .insert(addedComment)
       .returning('*')
       .then(comments => {
-        // console.log(comments)
         return comments[0]
       });
   };
 
-
-
-
-//Insert body into comments where articles.article_id = article_id retuning ('*')
 
 exports.fetchCommentsByArticleId = (article_id, sort_by = 'created_at', order = 'desc') => {
     return connection.select('*')
@@ -32,7 +27,6 @@ exports.fetchCommentsByArticleId = (article_id, sort_by = 'created_at', order = 
         if(!comments.length) {
             return Promise.reject({status: 404, msg: `article_id ${article_id} does not exist in database`})
         } else 
-        // console.log(comments)
         return comments
     })
 }
@@ -47,7 +41,6 @@ exports.updateCommentsByCommentId = (comment_id, inc_votes) => {
         if(!comment.length) {
             return Promise.reject({status: 404, msg: `comment_id ${comment_id} does not exist in database`})
         } else 
-        // console.log(comment[0])
         return comment[0]
     })
 }

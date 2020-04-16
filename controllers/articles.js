@@ -29,12 +29,8 @@ exports.postCommentsByArticleId = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
     const {article_id} = req.params
-    const {sort_by} = req.query
-    const {order} = req.query
-
-
-
-    // console.log(article_id)
+    const {sort_by, order} = req.query
+    
     fetchCommentsByArticleId(article_id, sort_by, order).then((comments) => {
         res.status(200).send({comments})
     }).catch(next)
@@ -43,8 +39,10 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
     const {sort_by} = req.query
     const {order} = req.query
+    const {author} = req.query
+    const {topic} = req.query
     
-    fetchArticles(sort_by, order).then((articles) => {
+    fetchArticles(sort_by, order, author, topic).then((articles) => {
         res.status(200).send({articles})
     }).catch(next)
 }

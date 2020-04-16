@@ -104,7 +104,7 @@ describe('app', () => {
                 })
             })
             describe('/articles', () => {
-                describe.only('GET', () => {
+                describe('GET', () => {
                     it('status: 200 Responds with an array of articles', () => {
                         return request(app).get('/api/articles')
                         .expect(200)
@@ -130,26 +130,33 @@ describe('app', () => {
                         })
                     })
                     it('status: 200 Able to accept a sort_by query defaulted to date', () => {
-                        return request(app).get('/api/articles?sort_by=created_at')
-                        .expect(200)
-                        .then(({body: {articles}}) => {
-                            expect(articles).to.be.sortedBy('created_at')
-                        })
-                    })
-                    it('status: 200 Able to accept a sort_by query defaulted to date', () => {
-                        return request(app).get('/api/articles?sort_by=title')
-                        .expect(200)
-                        .then(({body: {articles}}) => {
-                            expect(articles).to.be.sortedBy('title')
-                        })
-                    }) 
-                    it('status: 200 Able to accept a order query defaulted to desc', () => {
                         return request(app).get('/api/articles')
                         .expect(200)
                         .then(({body: {articles}}) => {
-                            expect(articles).to.be.sortedBy('created_at', {descending: true})
+                            expect(articles).to.be.ascendingBy('created_at')
+                        })
+                    })
+                    it('status: 200 Able to accept a sort_by query different to the default and an order query', () => {
+                        return request(app).get('/api/articles?sort_by=title&order=asc')
+                        .expect(200)
+                        .then(({body: {articles}}) => {
+                            expect(articles).to.be.ascendingBy('title')
                         })
                     }) 
+                    it('status: 200 Able to accept an author query', () => {
+                        return request(app).get("/api/articles?author=rogersop")
+                          .expect(200)
+                          .then(({body: {articles}}) => {
+                            expect(articles[0].author).to.equal("rogersop");
+                          });
+                      });
+                    it('status: 200 Able to accept an author query', () => {
+                        return request(app).get("/api/articles?topic=mitch")
+                          .expect(200)
+                          .then(({body: {articles}}) => {
+                            expect(articles[0].topic).to.equal("mitch");
+                          });
+                      });
                     it('status: 400 Invalid sort_by input of a column that does not exist on db', () => {
                         return request(app).get('/api/articles?sort_by=invalid')
                         .expect(400)
@@ -169,7 +176,18 @@ describe('app', () => {
                         return Promise.all(methodPromise)
                     })
                 })
-                describe('/:article_id', () => {
+                describe.only('/:article_id', () => {
+                    it('status: 405 Invalid method inputted', () => {
+                       const invalidMethods = ['delete', 'put', 'post'] 
+                       const methodPromise = invalidMethods.map((method) => {
+                        return request(app)[method]('/api/articles/1')
+                        .expect(405)
+                        .then(({body: {msg}}) => {
+                            expect(msg).to.equal('Invalid method used')
+                        })
+                       })
+                       return Promise.all(methodPromise)
+                    })
                     describe('GET', () => {
                         it('status: 200 responds with an object', () => {
                             return request(app).get('/api/articles/1')
@@ -363,26 +381,19 @@ describe('app', () => {
                                 })
                             })
                             it('status: 200 Able to take a sort_by query defaulted to created_at', () => {
-                                return request(app).get('/api/articles/1/comments?sort_by=created_at')
-                                .expect(200)
-                                .then(({body: {comments}}) => {
-                                    expect(comments).to.be.sortedBy('created_at')
-                                })
-                            })
-                            it('status: 200 Able to take a sort_by query', () => {
-                                return request(app).get('/api/articles/1/comments?sort_by=author')
-                                .expect(200)
-                                .then(({body: {comments}}) => {
-                                    expect(comments).to.be.sortedBy('author')
-                                })
-                            })
-                            it('status: 200 Able to take a order query defaulted to descending', () => {
                                 return request(app).get('/api/articles/1/comments')
                                 .expect(200)
                                 .then(({body: {comments}}) => {
-                                    expect(comments).to.be.sortedBy('created_at', {descending: true})
+                                    expect(comments).to.be.ascendingBy('created_at')
                                 })
-                            }) 
+                            })
+                            it('status: 200 Able to take a sort_by query', () => {
+                                return request(app).get('/api/articles/1/comments?sort_by=author&order=asc')
+                                .expect(200)
+                                .then(({body: {comments}}) => {
+                                    expect(comments).to.be.ascendingBy('author')
+                                })
+                            })
                             it('status: 404 valid input however article_id does not exist in database', () => {
                                 return request(app).get('/api/articles/1000/comments')
                                 .expect(404)
@@ -404,20 +415,13 @@ describe('app', () => {
                                     expect(msg).to.equal('Bad request')
                                 })
                             })
-                            it('status: 400 Invalid order query for an order that does not exist', () => {
-                                return request(app).get('/api/articles/1/comments?order=invalid')
-                                .expect(400)
-                                .then(({body: {msg}}) => {
-                                    expect(msg).to.equal('Bad request')
-                                })
-                            })
                         })
                     })
                 })
             })
             describe('/comments', () => {
                 describe('/:comment_id', () => {
-                    it('status: 405 Ivalid method has been inputted', () => {
+                    it('status: 405 Invalid method has been inputted', () => {
                         const invalidMethods = ['post', 'get']
                         const methodPromise = invalidMethods.map((method) => {
                             return request(app)[method]('/api/comments/1')
