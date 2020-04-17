@@ -1,8 +1,11 @@
-const connection = require('../db/connection')
+const connection = require("../db/connection");
 
 exports.fetchAllTopics = () => {
-    return connection.select('*').from('topics').returning('*')
+  return connection
+    .select("*")
+    .from("topics")
+    .returning("*")
     .then((topics) => {
-        return topics
-    })
-}
+      return topics;
+    });
+};
