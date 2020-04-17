@@ -14,20 +14,21 @@ const { formatDates, formatComments, makeRefObj } = require('../utils/utils');
       .rollback()
       .then(() => {
           return knex.migrate.latest()
-      }).then(() => {
+      })
+      .then(() => {
         const topicsInsertions = knex('topics').insert(topicsData);
         const usersInsertions = knex('users').insert(usersData)
         
           return Promise.all([topicsInsertions, usersInsertions])
             })
-            .then(articleRows => {
-
-              const formattedDates = formatDates(articlesData, articleRows)
-              return knex('articles').insert(formattedDates).returning('*')
+      .then(articleRows => {
+        // console.log(articlesData[0])
+          const formattedDates = formatDates(articlesData, articleRows)
+          return knex('articles').insert(formattedDates).returning('*')
             })
-            .then((articleRows) => {
-              const articleRef = makeRefObj(articleRows);
-              const formattedComments = formatComments(commentsData, articleRef);
-              return knex('comments').insert(formattedComments);
+      .then((articleRows) => {
+          const articleRef = makeRefObj(articleRows);
+          const formattedComments = formatComments(commentsData, articleRef);
+            return knex('comments').insert(formattedComments);
             });   
     }

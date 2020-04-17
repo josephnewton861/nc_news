@@ -3,8 +3,8 @@ const {addCommentsByArticleId, fetchCommentsByArticleId} = require('../models/co
 
 exports.getArticlesByArticleId = (req, res, next) => {
     const {article_id} = req.params
-    fetchArticlesByArticleId(article_id).then((articles) => {
-        res.status(200).send({articles})
+    fetchArticlesByArticleId(article_id).then((article) => {
+        res.status(200).send({article})
     }).catch(next)
 }
 
@@ -21,9 +21,8 @@ exports.postCommentsByArticleId = (req, res, next) => {
     const {article_id} = req.params
     const body = req.body
 
-    addCommentsByArticleId(article_id, body).then((comments) => {
-          console.log(comments)
-        res.status(201).send({comments})
+    addCommentsByArticleId(article_id, body).then((comment) => {
+        res.status(201).send({comment})
     }).catch(next)
 }
 

@@ -4,7 +4,7 @@ exports.up = function(knex) {
     commentsTable.increments('comment_id')
     commentsTable.string('author').references('users.username')
     commentsTable.integer('article_id').references('articles.article_id').notNullable()
-    commentsTable.integer('votes')
+    commentsTable.integer('votes').defaultsTo(0)
     commentsTable.timestamp('created_at').defaultTo(knex.fn.now())
     commentsTable.text('body').notNullable()
   })
