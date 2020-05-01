@@ -16,7 +16,6 @@ exports.seed = function (knex) {
     .then(() => {
       const topicsInsertions = knex("topics").insert(topicsData);
       const usersInsertions = knex("users").insert(usersData);
-
       return Promise.all([topicsInsertions, usersInsertions]);
     })
     .then((articleRows) => {

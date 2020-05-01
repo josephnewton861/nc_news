@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const apiRouter = require("./routes/api");
 const {
   handles400s,
@@ -7,7 +8,7 @@ const {
   handles500s,
   handles405s,
 } = require("./error-handling/errors");
-
+app.use(cors());
 app.use(express.json());
 
 app.use("/api", apiRouter);
