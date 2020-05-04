@@ -213,7 +213,7 @@ describe("app", () => {
         });
         describe("/:article_id", () => {
           it("status: 405 Invalid method inputted", () => {
-            const invalidMethods = ["delete", "put", "post"];
+            const invalidMethods = ["put", "post"];
             const methodPromise = invalidMethods.map((method) => {
               return request(app)
                 [method]("/api/articles/1")
