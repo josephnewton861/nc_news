@@ -1,6 +1,6 @@
 # NC News Backend Express Server
 
-This project highlights everything learned during the backend section of the Northcoders bootcamp. It includes using RESTful practices, seeding a DB, express, knee and axios. The API gives access to a DB containing articles, comments, topics and users.
+This project highlights everything learned during the backend section of the Northcoders bootcamp. It includes using RESTful practices, seeding a DB, express, knex and axios. The API gives access to a DB containing articles, comments, topics and users.
 
 ## Getting Started
 
