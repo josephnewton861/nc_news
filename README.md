@@ -8,7 +8,7 @@ This project highlights everything learned during the backend section of the Nor
 
 #### git clone https://github.com/josephnewton861/nc_news.git
 
-##### View the hosted APi on Heruko on the following link: https://joseph-nc-news.herokuapp.com/api/
+##### View the hosted API on Heruko on the following link: https://joseph-nc-news.herokuapp.com/api/
 
 ## Available Endpoints
 
