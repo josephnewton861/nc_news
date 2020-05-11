@@ -2,11 +2,11 @@
 
 This project highlights everything learned during the backend section of the Northcoders bootcamp. It includes using RESTful practices, seeding a DB, express, knee and axios. The API gives access to a DB containing articles, comments, topics and users.
 
-##Getting Started
+## Getting Started
 
-###Feel free to clone the repo, but do not fork it! 
+### Feel free to clone the repo, but do not fork it! 
 
-####git clone https://github.com/josephnewton861/nc_news.git
+#### git clone https://github.com/josephnewton861/nc_news.git
 
 ##### View the hosted APi on Heruko on the following link: https://joseph-nc-news.herokuapp.com/api/
 
